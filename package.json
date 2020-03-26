@@ -1,0 +1,34 @@
+{
+    "name": "fxnet-blobber",
+    "version": "0.0.1",
+    "private": true,
+    "description": "Binary transformations as a service",
+    "author": {
+        "name": "Peter Schrammel"
+    },
+    "bugs": {
+        "url": "https://github.com/fixingthenet/fxnet-blobber/issues"
+    },
+    "homepage": "https://github.com/fixingthenet/fxnet-blobber",
+    "engines": {
+        "node": ">=13.0.0"
+    },
+    "scripts": {
+        "start": "node src/main.js",
+        "dev": "nodemon src/main.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/fixingthenet/fxnet-blobber.git"
+    },
+    "dependencies": {
+        "capture-website": "^0.8.1",
+        "express": "^4.17.1",
+        "gm": "^1.23.1",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.2",
+        "unoconv2": "1.0.0",
+        "uuid": "3.4.0"
+    },
+    "devDependencies": {}
+}
