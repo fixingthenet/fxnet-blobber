@@ -19,7 +19,8 @@ async function start(listen) {
     app.use(logger('dev'));
 //    app.use(bodyParser.json());
 //    app.use(cors());
-//    server.applyMiddleware({ app });
+    //    server.applyMiddleware({ app });
+
 //    await models.User.setup();
     app.post('/api/v1/:key/:ns/:bucket/transform', async function (req, res) {
         req.pause() // until we prepared some things
@@ -37,7 +38,7 @@ async function start(listen) {
 
         req.on('end', async () => {
             try {
-                trans=new transformator(req.params, path)
+                trans=new transformator(req.params, path, true)
                 trans.explain()
                 trans.run()
                 res.send({ success: true})

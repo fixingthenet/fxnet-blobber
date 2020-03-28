@@ -1,4 +1,4 @@
-FROM node:13.10.1-buster-slim
+FROM node:12.16.1-buster-slim
 
 # Adds backports
 #RUN awk '$1 ~ "^deb" { $3 = $3 "-backports"; print; exit }' /etc/apt/sources.list > /etc/apt/sources.list.d/backports.list
