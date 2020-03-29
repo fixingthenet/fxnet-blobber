@@ -1,0 +1,10 @@
+ {
+    "tr": [
+        ["in-browser", {"url":"https://www.heise.de/", "m": "image/jpg" }],
+        ["rotate", {"degrees": 12}],
+        ["grayscale"],
+        ["out", { "m": "image/png" }]
+    ],
+    "att": { "0": "sample/fixtures/family.jpg" }
+}
+
