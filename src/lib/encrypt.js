@@ -10,33 +10,27 @@ Array.prototype.forEachAsync = async function (fn) {
 
 
 class Encryptor {
-    constructor(ispost) {
-        this.isPost=ispost
-        this.algorithm="aes256"
-        this.ivlength=16
+    constructor(isPost) {
+        this.isPost=isPost
     }
 
-    async encrypt(commands, privKey, dataPath, assetPaths) {
+    async encrypt(commands, privKey, dataPath) {
         if (this.isPost) { //posts are not encrypted
             //base64 encode assetPaths
-            if (assetPaths) {
-                commands.att={}
-                await assetPaths.forEachAsync( async (path,index) => {
-                    var content = await fs.promises.readFile(path)
-                    var base64 = Buffer.from(content).toString('base64')
-                    console.log("adding",index, base64)
-                    commands.att[index] = base64
+            var att = commands.att;
+            if (att) {
+                await Object.entries(att).forEachAsync( async ([num,path]) => {
+                    var content = await fs.promises.readFile(path, {encoding: 'binary'})
+                    var base64 = Buffer.from(content,'binary').toString('base64')
+                    commands.att[num] = base64
                 })
-                console.log(commands)
                 var data = JSON.stringify(commands)
             }
         } else {
-            if (assetPaths) throw('can only package files on post')
+            delete(command.att) // just to make sure get have no atts
             var text = Buffer.from(JSON.stringify(commands));
             var encrypted = crypto.privateEncrypt(privKey, text)
             var data = Buffer.from(encrypted).toString('base64')
-
-
         }
         await fs.promises.writeFile(dataPath, data)
         return true
@@ -47,10 +41,11 @@ class Encryptor {
             var command= JSON.parse(data)
             if (command.att) {
                 await Object.entries(command.att).forEachAsync( async ([num, base64]) => {
-                    data=Buffer.from(base64,'base64').toString('ascii')
-                    await fs.promises.writeFile(dir+'/'+num, data )
+                    data=Buffer.from(base64,'base64').toString('binary')
+                    var fileName=dir+'/'+num
+                    await fs.promises.writeFile(fileName, data, { encoding: 'binary'} )
+                    command.att[num]=fileName
                 });
-                delete(command.att)
             }
             return command
         } else {

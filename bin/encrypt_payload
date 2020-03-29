@@ -2,31 +2,46 @@
 
 const Encryptor = require('../src/lib/encrypt')
 const fs = require('fs')
+const transformator = require('../src/transformation')
+
+const path='sample/unpack'
 
 var enc=new Encryptor(true)
 
-commands= {
+var command= {
     ca: { until: 234823984},
     tr: [
-        ['from', {url: 'post://0'}],
+        ['in-file', {att: '0', m: 'image/jpg' }],
+        ['rotate', {degrees: 45 }],
+//        ['grayscale'],
         ['out', { m: 'image/png' }]
-    ]
+    ],
+
+    att: { '0': 'sample/family-2811003_1280.jpg' }
 }
 
+//console.log(commands)
+
 async function run() {
-    await enc.encrypt(commands,
-                await fs.promises.readFile('sample/priv.key'),
-                'sample/prepared.bin',
-                ['sample/vorlage.odt']
+    await enc.encrypt(command,
+                      await fs.promises.readFile('sample/priv.key'),
+                      'sample/prepared.bin'
                      );
 
-    var res = await enc.decrypt(
+
+    var com = await enc.decrypt(
         await fs.promises.readFile('sample/pub.key'),
         await fs.promises.readFile('sample/prepared.bin'),
         'sample/unpack'
     )
-    console.log(res)
-//    console.log(JSON.stringify(res))
+
+    var trans=new transformator(com, path, true);
+    trans.explain();
+    await trans.execute();
+
+
+
+
 }
 
 run()
