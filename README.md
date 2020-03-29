@@ -4,7 +4,7 @@ File transformation as a service.
 
 ## Description
 
-Convert a lot of format into other format with transformations. E.g.
+Convert a lot of formats into other formats with transformations. E.g.
  * converting a png image into a webp image
  * converting a LibreOffice Odt file into a PDF
  * Taking Odt, replacing handlerbar placeholders and rendering to Postscript
