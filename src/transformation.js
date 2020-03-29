@@ -25,6 +25,7 @@ var transformations = new Transformations();
     require('./transformations/rotate.js'),
     require('./transformations/out.js'),
     require('./transformations/grayscale.js'),
+    require('./transformations/odtHandlebar.js'),
 ].forEach( ([name,klass]) => { transformations.register(name, klass) } )
 
 
