@@ -7,23 +7,12 @@ const transformator = require('../src/transformation')
 const path='sample/unpack'
 
 var enc=new Encryptor(true)
+console.log()
 
-var command= {
-    ca: { until: 234823984},
-    tr: [
-               ['in-file', {att: '0', m: 'image/jpg' }],
-//        ['in-browser', {url:"https://heise.de", m: 'image/jpg' }],
-        ['rotate', {degrees: 12}],
-        ['grayscale'],
-        ['out', { m: 'image/png' }]
-    ],
 
-    att: { '0': 'sample/family-2811003_1280.jpg' }
-}
+async function run(cmdFile) {
+    var command = JSON.parse(await fs.promises.readFile(cmdFile));
 
-//console.log(commands)
-
-async function run() {
     await enc.encrypt(command,
                       await fs.promises.readFile('sample/priv.key'),
                       'sample/prepared.bin'
@@ -45,4 +34,4 @@ async function run() {
 
 }
 
-run()
+run(process.argv[2])

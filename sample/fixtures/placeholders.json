@@ -1,0 +1,16 @@
+{
+  "address": {
+    "line1": "Mr Foo Bar",
+    "line2": "Mainstreet 3",
+    "line3": "80999 München"
+  },
+  "recipient": {
+    "male": true,
+    "surname": "Bar"
+  },
+  "rows": [
+    {"header": "Yes, please"},
+    {"header": "Maybe later"}
+  ]
+
+}
