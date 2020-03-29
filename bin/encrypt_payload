@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+const Encryptor = require('../src/lib/encrypt')
+const fs = require('fs')
+
+var enc=new Encryptor(true)
+
+commands= {
+    ca: { until: 234823984},
+    tr: [
+        ['from', {url: 'post://0'}],
+        ['out', { m: 'image/png' }]
+    ]
+}
+
+async function run() {
+    await enc.encrypt(commands,
+                await fs.promises.readFile('sample/priv.key'),
+                'sample/prepared.bin',
+                ['sample/vorlage.odt']
+                     );
+
+    var res = await enc.decrypt(
+        await fs.promises.readFile('sample/pub.key'),
+        await fs.promises.readFile('sample/prepared.bin'),
+        'sample/unpack'
+    )
+    console.log(res)
+//    console.log(JSON.stringify(res))
+}
+
+run()

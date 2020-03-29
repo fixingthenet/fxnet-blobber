@@ -1,0 +1,5 @@
+#!/bin/bash
+
+openssl genrsa -out priv.key 2048
+openssl rsa -in priv.key -pubout -out pub.key
+

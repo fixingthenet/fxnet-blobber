@@ -1,0 +1,10 @@
+{
+  "project": "fxneet-blobber",
+    
+  "git": "github.com/fixingthenet/fxnet-blobber",
+  "path": "fxnet-blobber",
+  "docker": {
+    "repo": "fxnet",
+    "name": "fxnet-blobber"
+  }
+}
