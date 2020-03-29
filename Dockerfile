@@ -23,8 +23,10 @@ RUN apt install -y \
     libxslt-dev \
     libxml2-dev
 RUN apt install -y \
-    graphicsmagick
-    
+    graphicsmagick \
+    imagemagick \
+    libxss1
+        
 #### Begin setup ####
 # Env variables
 ENV SERVER_PORT 3000

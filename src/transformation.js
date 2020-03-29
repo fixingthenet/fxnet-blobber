@@ -20,9 +20,11 @@ class Transformations {
 var transformations = new Transformations();
 
 [
+    require('./transformations/inBrowser.js'),
     require('./transformations/inFile.js'),
     require('./transformations/rotate.js'),
     require('./transformations/out.js'),
+    require('./transformations/grayscale.js'),
 ].forEach( ([name,klass]) => { transformations.register(name, klass) } )
 
 

@@ -11,9 +11,10 @@ var enc=new Encryptor(true)
 var command= {
     ca: { until: 234823984},
     tr: [
-        ['in-file', {att: '0', m: 'image/jpg' }],
-        ['rotate', {degrees: 45 }],
-//        ['grayscale'],
+               ['in-file', {att: '0', m: 'image/jpg' }],
+//        ['in-browser', {url:"https://heise.de", m: 'image/jpg' }],
+        ['rotate', {degrees: 12}],
+        ['grayscale'],
         ['out', { m: 'image/png' }]
     ],
 
