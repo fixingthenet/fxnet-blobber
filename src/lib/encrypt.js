@@ -34,15 +34,8 @@ class Encryptor {
             if (assetPaths) throw('can only package files on post')
             var text = Buffer.from(JSON.stringify(commands));
             var encrypted = crypto.privateEncrypt(privKey, text)
-//            console.log("encrypt",encrypted)
             var data = Buffer.from(encrypted).toString('base64')
 
-//            symetric (might be needed - don't know)
-//            var iv = crypto.randomBytes(this.ivlength);
-//            var cipher = crypto.createCipheriv(this.algorithm, encKey, iv);
-//            var ciphered = cipher.update(text, 'utf8', 'base64');
-//            ciphered += cipher.final('base64');
-//            var data = iv.toString('base64') + ':' + ciphered
 
         }
         await fs.promises.writeFile(dataPath, data)
@@ -62,27 +55,11 @@ class Encryptor {
             return command
         } else {
             var decoded = Buffer.from(data.toString(),'base64')
-            //console.log('decoded', decoded.toString('utf8'))
             var decrypted = crypto.publicDecrypt(pubKey, decoded)
             var command = JSON.parse(decrypted.toString('utf8'))
             return command
         }
 
-//sym
-//        var components = ciphertext.split(':');
-//        var iv_from_ciphertext = Buffer.from(components.shift(), outputEncoding);
-//        var decipher = crypto.createDecipheriv(algorithm, key, iv_from_ciphertext);
-//        var deciphered = decipher.update(components.join(':'), outputEncoding, inputEncoding);
-//        deciphered += decipher.final(inputEncoding);
-
-//asym
-//        pubK = fs.readFileSync('sample/pub.key').toString();
-//        //decrypting the text using public key
-//        decoded = Buffer.from(urlParam, 'base64')
-        //console.log(decoded.toString('binary'))
-//        decrypted = crypto.publicDecrypt(pubK, Buffer.from(decoded))
-
-//        origData = Buffer.from(decrypted).toString('utf-8')
     }
 
 }
