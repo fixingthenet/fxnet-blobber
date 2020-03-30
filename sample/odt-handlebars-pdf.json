@@ -2,6 +2,7 @@
     "tr": [
         ["in-file", {"att": "0"}],
         ["odt-handlebar", {"att": "1" }],
+        ["doc-convert", { "format": "pdf"}],
         ["out"]
     ],
     "att": { 

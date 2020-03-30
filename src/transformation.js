@@ -20,12 +20,13 @@ class Transformations {
 var transformations = new Transformations();
 
 [
-    require('./transformations/inBrowser.js'),
-    require('./transformations/inFile.js'),
-    require('./transformations/rotate.js'),
-    require('./transformations/out.js'),
-    require('./transformations/grayscale.js'),
-    require('./transformations/odtHandlebar.js'),
+    require('./transformations/inBrowser'),
+    require('./transformations/inFile'),
+    require('./transformations/rotate'),
+    require('./transformations/out'),
+    require('./transformations/grayscale'),
+    require('./transformations/odtHandlebar'),
+    require('./transformations/docConvert'),
 ].forEach( ([name,klass]) => { transformations.register(name, klass) } )
 
 
@@ -44,7 +45,11 @@ class Transformator {
 
     async execute() {
         await this.plan().forEachAsync( async (step) => {
-            await step.transform()
+            try {
+                await step.transform()
+            } catch(err) {
+                console.error(`${step.name()} errored`)
+            }
         });
     }
 

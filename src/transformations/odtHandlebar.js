@@ -15,8 +15,8 @@ class Trans extends Base {
 
     async transform() {
         const { stdout, stderr } = await exec(`odt_handlebars ${this.inPath} ${this.outPath} ${this.trans.attPath(this.options.att)}`);
-        console.log('stdout:', stdout);
-        console.error('stderr:', stderr);
+        console.debug(`${NAME} stdout:`, stdout);
+        console.error(`${NAME} stderr: `, stderr);
     }
 }
 
