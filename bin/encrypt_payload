@@ -10,7 +10,7 @@ var enc=new Encryptor(true)
 console.log()
 
 
-async function run(cmdFile) {
+async function run(cmdFile,transform) {
     var command = JSON.parse(await fs.promises.readFile(cmdFile));
 
     await enc.encrypt(command,
@@ -18,20 +18,24 @@ async function run(cmdFile) {
                       'sample/prepared.bin'
                      );
 
+    if (transform) {
+        var com = await enc.decrypt(
+            await fs.promises.readFile('sample/pub.key'),
+            await fs.promises.readFile('sample/prepared.bin'),
+            'sample/unpack'
+        )
 
-    var com = await enc.decrypt(
-        await fs.promises.readFile('sample/pub.key'),
-        await fs.promises.readFile('sample/prepared.bin'),
-        'sample/unpack'
-    )
+        var trans=new transformator(com, path, true);
+        trans.explain();
+        await trans.execute();
+    } else {
+        console.log("no transformation prepared cmd in sample/prepared.bin")
 
-    var trans=new transformator(com, path, true);
-    trans.explain();
-    await trans.execute();
-
+    }
 
 
 
 }
 
-run(process.argv[2])
+
+run(process.argv[2], process.argv[3] == 'transform')

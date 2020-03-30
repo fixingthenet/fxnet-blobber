@@ -1,6 +1,7 @@
 //middleware
 const express = require('express');
 const logger = require('morgan');
+const config = require('./config')
 //const bodyParser = require('body-parser');
 //const cors = require('cors');
 const uuid = require('uuid')
@@ -8,27 +9,27 @@ const fs = require('fs')
 
 const app = express();
 const transformator = require('./transformation')
+const Encryptor = require('./lib/encrypt')
 
 async function start(listen) {
-    // Make sure the database tables are up to date
-    //    await models.sequelize.authenticate();
     var options = {
         port: 3000,
     }
-    // Start the GraphQL server
     app.use(logger('dev'));
-//    app.use(bodyParser.json());
-//    app.use(cors());
-    //    server.applyMiddleware({ app });
 
-//    await models.User.setup();
     app.post('/api/v1/:key/:ns/:bucket/transform', async function (req, res) {
         req.pause() // until we prepared some things
-        var path = process.cwd() + '/uploads/' + uuid.v4()
-        await fs.promises.mkdir(path)
-        var origPost =  fs.createWriteStream(path+'/original_post.bin')
 
-        cleanup= async function() { await fs.promises.rmdir(path, {recursive: true}) }
+        var path = config.UPLOAD_PATH + uuid.v4()
+        await fs.promises.mkdir(path)
+        var origPostPath=path+'/original_post.bin'
+        console.debug(`POST: uploading to ${origPostPath}`)
+        var origPost =  fs.createWriteStream(origPostPath)
+
+//        res.on('finish', function() { fs.rmdir(path, {recursive: true}, function(err){
+//            if (err) console.err(`cleanup failure for ${path}`)
+//        })
+//                                    })
 
         req.pipe(origPost)
         req.on('error', async () => {
@@ -37,16 +38,21 @@ async function start(listen) {
         })
 
         req.on('end', async () => {
+            origPost.close()
             try {
-                trans=new transformator(req.params, path, true)
+                var enc=new Encryptor(true)
+                var com = await enc.decrypt(
+                    await fs.promises.readFile(config.ROOT_PATH + '/sample/pub.key'),
+                    await fs.promises.readFile(origPostPath),
+                    path
+                )
+                var trans=new transformator(com, path, true)
                 trans.explain()
-                trans.run()
-                res.send({ success: true})
+                await trans.execute()
+                res.sendFile(path+'/out.bin')
             } catch (e) {
                 console.log("UUUUPS",e)
                 res.send({ success: false })
-            } finally {
-                await cleanup()
             }
         })
 

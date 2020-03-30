@@ -7,11 +7,11 @@ class Trans extends Base {
         return NAME
     }
     explain() {
-        return `output ${this.inPath} to 'out.bin'`
+        return `output ${this.inPath} to '${this.trans.path}/out.bin'`
     }
 
     async transform() {
-        await fs.promises.copyFile(this.inPath, this.trans.path+'/'+'out.bin')
+        await fs.promises.copyFile(this.inPath, this.trans.path+'/out.bin')
 //       return this.options.m
     }
 }
