@@ -1,16 +1,22 @@
 #!/usr/bin/env node
 
+// call with:
+// encrypt_paylad commandfile GET|POST transform?
+
+
 const Encryptor = require('../src/lib/encrypt')
 const fs = require('fs')
 const transformator = require('../src/transformation')
 
 const path='sample/unpack'
 
-var enc=new Encryptor(true)
-console.log()
 
 
-async function run(cmdFile,transform) {
+
+async function run(cmdFile,isPost,transform) {
+    console.log(`preparing for ${ isPost ? 'POST' : 'GET'} ${transform ? 'with' : 'without' } transformation`)
+    var enc=new Encryptor(isPost)
+
     var command = JSON.parse(await fs.promises.readFile(cmdFile));
 
     await enc.encrypt(command,
@@ -29,7 +35,14 @@ async function run(cmdFile,transform) {
         trans.explain();
         await trans.execute();
     } else {
-        console.log("no transformation prepared cmd in sample/prepared.bin")
+        console.log("no transformation prepared; cmd in sample/prepared.bin")
+        if (isPost) {
+            console.log(`run: curl -X POST --data-binary @sample/prepared.bin http://localhost:3000/api/v1/xxx/yyy/zzzz/transform > res.jpg`)
+        } else {
+            var cmd = await fs.promises.readFile('sample/prepared.bin')
+            console.log(`run: curl "http://localhost:3000/api/v1/xxx/yyy/zzzz/transform/${cmd}" > res.jpg`)
+        }
+
 
     }
 
@@ -38,4 +51,4 @@ async function run(cmdFile,transform) {
 }
 
 
-run(process.argv[2], process.argv[3] == 'transform')
+run(process.argv[2], process.argv[3] == 'POST', process.argv[4] == 'transform')

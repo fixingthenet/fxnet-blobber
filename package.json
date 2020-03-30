@@ -22,6 +22,7 @@
         "url": "git+https://github.com/fixingthenet/fxnet-blobber.git"
     },
     "dependencies": {
+        "base64url": "^3.0.1",
         "capture-website": "^0.8.1",
         "express": "^4.17.1",
         "gm": "^1.23.1",

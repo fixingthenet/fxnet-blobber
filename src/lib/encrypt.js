@@ -2,6 +2,7 @@
 
 var crypto = require('crypto');
 var fs = require('fs');
+var base64url = require('base64url')
 
 Array.prototype.forEachAsync = async function (fn) {
     var i=0
@@ -27,10 +28,11 @@ class Encryptor {
                 var data = JSON.stringify(commands)
             }
         } else {
-            delete(command.att) // just to make sure get have no atts
+            delete(commands.att) // just to make sure get have no atts
             var text = Buffer.from(JSON.stringify(commands));
             var encrypted = crypto.privateEncrypt(privKey, text)
-            var data = Buffer.from(encrypted).toString('base64')
+            console.log(encrypted)
+            var data = base64url(Buffer.from(encrypted).toString('binary'))
         }
         await fs.promises.writeFile(dataPath, data)
         return true
@@ -49,7 +51,8 @@ class Encryptor {
             }
             return command
         } else {
-            var decoded = Buffer.from(data.toString(),'base64')
+            var decoded = Buffer.from(base64url.decode(data),'binary')
+            console.log(decoded)
             var decrypted = crypto.publicDecrypt(pubKey, decoded)
             var command = JSON.parse(decrypted.toString('utf8'))
             return command
