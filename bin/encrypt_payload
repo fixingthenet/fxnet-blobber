@@ -10,9 +10,6 @@ const transformator = require('../src/transformation')
 
 const path='sample/unpack'
 
-
-
-
 async function run(cmdFile,isPost,transform) {
     console.log(`preparing for ${ isPost ? 'POST' : 'GET'} ${transform ? 'with' : 'without' } transformation`)
     var enc=new Encryptor(isPost)
@@ -50,5 +47,10 @@ async function run(cmdFile,isPost,transform) {
 
 }
 
+
+if (process.argv.length <2) {
+    console.log("usage: command_path GET|POST? transform?")
+    console.log("GET is default, no transformation is default")
+}
 
 run(process.argv[2], process.argv[3] == 'POST', process.argv[4] == 'transform')
