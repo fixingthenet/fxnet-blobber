@@ -53,6 +53,9 @@ class Transformator {
         });
     }
 
+    // private
+
+
     // plan the executions piepline (currently does nothing but finds the tranformation commands)
     plan() {
         if (this.planResult) { return this.planResult}

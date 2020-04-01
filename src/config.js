@@ -7,5 +7,9 @@ module.exports = {
     //  TIMEOUT_SERVER: process.env.TIMEOUT_SERVER || 60000 * 2,
     //  TIMEOUT_SOCKET: process.env.TIMEOUT_SOCKET || 70000 * 2
     ROOT_PATH: process.cwd(),
-    UPLOAD_PATH: process.cwd() + '/uploads/'
+    UPLOAD_PATH: process.cwd() + '/uploads/',
+    CACHE: {
+        path: process.cwd() + '/cache/',
+        seed: "awioeucnr0a92384cn0q92834pc928u3p490m2q348"
+    },
 }

@@ -8,8 +8,10 @@ const uuid = require('uuid')
 const fs = require('fs')
 
 const app = express();
-const transformator = require('./transformation')
+
+const Transformator = require('./transformation')
 const Encryptor = require('./lib/encrypt')
+const FileCache = require('./fileCache')
 
 async function start(listen) {
     var options = {
@@ -48,7 +50,7 @@ async function start(listen) {
                     await fs.promises.readFile(origPostPath),
                     path
                 )
-                var trans=new transformator(com, path, true)
+                var trans=new Transformator(com, path, true)
                 trans.explain()
                 await trans.execute()
                 res.sendFile(path+'/out.bin')
@@ -61,12 +63,15 @@ async function start(listen) {
         req.resume()
     });
 
-    app.get('/api/v1/:key/:ns/:bucket/transform/:cmd', async function (req, res) {
+    app.get('/api/v1/:key/:ns/:bucket/transform/:encrypted_cmd', async function (req, res) {
+        // this could be moved into middleware
+        //writing before cache check is not good....improvement needed
+        var encrypted_cmd = req.params.encrypted_cmd
         var path = config.UPLOAD_PATH + uuid.v4()
         await fs.promises.mkdir(path)
         var origPostPath=path+'/original_post.bin'
         console.debug(`GET: command`)
-        await fs.promises.writeFile(origPostPath, req.params.cmd)
+        await fs.promises.writeFile(origPostPath, encrypted_cmd)
 
         var cleanup = function() {
             fs.rmdir(path, {recursive: true}, function(err){
@@ -83,15 +88,22 @@ async function start(listen) {
 
         try {
             var enc=new Encryptor(false)
-            var com = await enc.decrypt(
+            var cmd = await enc.decrypt(
                 await fs.promises.readFile(config.ROOT_PATH + '/sample/pub.key'),
                 await fs.promises.readFile(origPostPath),
                 path
             )
-            var trans=new transformator(com, path, true)
-            trans.explain()
-            await trans.execute()
-            res.sendFile(path+'/out.bin')
+            var cache=new FileCache(config.CACHE, cmd, encrypted_cmd)
+            if (await cache.isHit()) {
+                res.sendFile(cache.filePath()) // this is too file specific, a stream is better
+            } else {
+                var trans=new Transformator(cmd, path, true)
+                trans.explain()
+                await trans.execute()
+
+                await cache.store(path+'/out.bin')
+                res.sendFile(path+'/out.bin')
+            }
         } catch (e) {
             console.error("UUUUPS",e)
             res.send({ success: false })
