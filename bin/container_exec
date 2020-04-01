@@ -1,5 +1,13 @@
 #!/bin/bash
 
+set -e
+
+if [ "$1" = "--no-port" ]; then
+  PORT=''
+else
+  PORT='-p 3000:3000'
+fi
+
 app_dir=`pwd`
 prj_file="$app_dir/project.json"
 
@@ -8,4 +16,4 @@ repo=`jq -r ".docker.repo" "$prj_file"`
 project=`jq -r ".docker.name" "$prj_file"`
 
 #`aws ecr get-login --region eu-west-1 --no-include-email`
-docker run -ti --rm  -p 3000:3000 -v /vagrant/apps/$path:/code $repo/$project:latest /bin/bash
+docker run -ti --rm  $PORT -v /vagrant/apps/$path:/code $repo/$project:latest /bin/bash
