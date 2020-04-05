@@ -19,7 +19,7 @@ async function start(listen) {
     }
     app.use(logger('dev'));
 
-    app.post('/api/v1/:key/:ns/:bucket/transform', async function (req, res) {
+    app.post('/api/v1/:ns/:bucket/:key/t', async function (req, res) {
         req.pause() // until we prepared some things
 
         var path = config.UPLOAD_PATH + uuid.v4()
@@ -63,7 +63,7 @@ async function start(listen) {
         req.resume()
     });
 
-    app.get('/api/v1/:key/:ns/:bucket/transform/:encrypted_cmd', async function (req, res) {
+    app.get('/api/v1/:ns/:bucket/:key/t/:encrypted_cmd', async function (req, res) {
         // this could be moved into middleware
         //writing before cache check is not good....improvement needed
         var encrypted_cmd = req.params.encrypted_cmd
@@ -110,7 +110,7 @@ async function start(listen) {
         }
     });
 
-    app.get('/api/health.json', (req,res) => {
+    app.get('/health', (req,res) => {
         res.send(JSON.stringify({ "success": true}))
     })
 

@@ -63,7 +63,7 @@ class Transformator {
         var inPath=''
         var outPath=this.tmpFilename()
 
-        this.command.tr.forEach( (cmd) => {
+        this.command.blob.tr.forEach( (cmd) => {
             var transf = transformations.get(cmd[0])
             this.planResult.push( new transf(this,cmd[1],inPath, outPath) )
             inPath = outPath

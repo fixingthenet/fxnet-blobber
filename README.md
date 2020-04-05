@@ -1,20 +1,103 @@
 # fxnet-blobber
 
-File transformation as a service.
+File transformations as a service. E.g.
 
-## Description
-
-Convert a lot of formats into other formats with transformations. E.g.
  * converting a png image into a webp image
  * converting a LibreOffice Odt file into a PDF
  * Taking Odt, replacing handlerbar placeholders and rendering to Postscript
  * Taking an image cropping it, rotating it 10 degrees, removing colors to grayscale and output as a pdf
+ * identifying the position of faces in an image
+
+## Concept
+
+### The problem
+
+The are a lot of binary formats you may use in an application: images, pdf, word, excel. Handling them in your application introduces heavyweight dependencies. Precalculating images in all needed sizes is a waste of resources and introducing new styles (e.g. rounded corners) leads to huge precalculation runs.
+
+### The solution
+
+This service provides the possibility to run a (binary) document through a bunch of transformations and turn it into another document (format).
+
+### API
 
 The service has two operation modes:
- * POST you define the transformations via the json body (uncached mode)
- * GET you define the transformations via the url path (cached mode)
+ * POST you define the transformations via the json body
+ * GET you define the transformations via the url path
 
-## Quickstart
+In the GET mode:
+ * transformation pipeline is encoded into the url
+ * caching is possible
+ * attachments are not allowed
+ * two identical transformations have the same url
+ * the endpoint is GET 'api/v1/:namespace/:bucket/:key/t/:encoded_encrypted_transformation_pipeline'
+
+In th POST mode is to be used by your backends (see security)
+  * allows to send the source blobs as attachments
+  * caching is not possible ( and usually not needed)
+  * the endpoint is POST 'api/v1/:namespace/:bucket/:key/t', the body is a full "command"
+
+### Transformations
+A transformation start with a source (e.g. get the file from a url or  through a headless browser), followed by a bunch of transformations (e.g, croping, grayscaling, handlebar replacements, ......) and output it to a specific format.
+
+
+``` json
+{
+  "blob": {
+         "tr": [
+             [ "in-url": { "url": "https://someurl.example.com/image/1" }],
+             [ "rotate", {"degrees": 12}],
+             [ "grayscale"],
+             [ "out", { "m": "image/png" }]
+         ]
+  }
+}
+```
+
+Transformations have a name (e.g. "rotate", "grayscale", ....) and an optional parameter list.
+
+Available Sources:
+"in-browser","in-file","in-url"
+
+Available Transformations:
+"grayscale", "rotate", "odt-handlebar", "doc-convert"
+
+
+### Caching
+
+Transformations can be expensive so caching the result is essential. The cache key is the value of the "blob" key. The cache time can be defined by adding a cache instruction to the blob. Cache can only set at the GET api:
+
+``` json
+{
+  "blob": {
+     "ca": { "utl": 234098098234 }
+    }
+}
+```
+The "utl" option takes a unix time.
+
+### Attachments
+
+The POST endpoint allows you to send the files that are needed for the transformations as attachments:
+
+``` json
+{
+  "att": {
+    "name1": "base64encoded binary"
+  }
+}
+```
+
+The attachments can be referenced by a specific
+
+### Security
+
+The access to the transformation pipeline and it's configuration has to be protected. Thefore the "blob" value has to be encrypted and base64 encoded. The "key" parameter in the url defines the encryptor's key that referes to his public key.
+
+
+
+
+## Usage
+### Quickstart
 ```
 bin/generate_key
 bin/prepare_upload priv.key sample/commands.json sample/vorlage.odt sample/prepared.bin
@@ -22,7 +105,7 @@ curl -X POST --data-binary @sample/prepared.bin localhost:3000/api/v1/key1/333/3
 ```
 
 
-## Docker
+### Docker
 
 Build image
 
@@ -36,64 +119,26 @@ Run image
 $ bin/container_exec bin/run
 ```
 
-## Usage
+### Healthcheck
 
-Post the file you want to convert to the server and get the converted file in return.
-
-See all possible conversions on the [unoconv website](http://dag.wiee.rs/home-made/unoconv/).
-
-API for the webservice is /unoconv/{format-to-convert-to} so a docx to pdf would be
-
-```bash
-$ curl --form file=@myfile.docx http://localhost/unoconv/pdf > myfile.pdf
-```
-
-### Formats
-
-To see all possible formats for convertion visit ```/unoconv/formats```
-
-To see formats for a given type ```/unoconv/formats/{document|graphics|presentation|spreadsheet}```
-
-### Versions
-
-To see all versions of installed dependencies lookup ```/unoconv/versions```
-
-### Healthz
-
-Are we alive? ```/healthz```
+Are we alive? ```/health```
 
 returns
 
-```JavaScript
+```json
 {
-  uptime: 18.849
+  "success": true
 }
 ```
 
-## Environment
+### Environment
 
-You can change the webservice port and filesize-limit by changing environment variables.
 
-SERVER_PORT default is 3000
-
-PAYLOAD_MAX_SIZE default is 1048576 (1 MB)
-
-PAYLOAD_TIMEOUT default is 2 minutes (120 000 milliseconds)
-
-TIMEOUT_SERVER default is 2 minutes (120 000 milliseconds)
-
-TIMEOUT_SOCKET default is 2 minutes and 20 seconds (140 000 milliseconds)
-
-Change it in the Dockerfile or create an env-file and load it at containerstart
-
-```bash
-$ docker run --env-file=docker.env -d -p 80:3000 --name unoconv-webservice unoconv-webservice
-```
 ## Thanks
 
 I'd like to thank :
   * https://github.com/zrrrzzt/tfk-api-unoconv for his/her work to wrap unoconv2 as a service.
-
+  * Thanks to Experteer GmbH to allow me to design https://github.com/experteer/blobsterix, a ruby implementation of the concept with built in storage.
 
 ## License
 

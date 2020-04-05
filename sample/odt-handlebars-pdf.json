@@ -1,10 +1,12 @@
  {
-    "tr": [
+   "blob": {
+      "tr": [
         ["in-file", {"att": "0"}],
         ["odt-handlebar", {"att": "1" }],
         ["doc-convert", { "format": "pdf"}],
         ["out"]
-    ],
+      ]
+   },
     "att": { 
       "0": "sample/fixtures/template.odt",
       "1": "sample/fixtures/placeholders.json"

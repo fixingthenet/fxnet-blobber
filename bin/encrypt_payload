@@ -34,10 +34,10 @@ async function run(cmdFile,isPost,transform) {
     } else {
         console.log("no transformation prepared; cmd in sample/prepared.bin")
         if (isPost) {
-            console.log(`run: curl -X POST --data-binary @sample/prepared.bin http://localhost:3000/api/v1/xxx/yyy/zzzz/transform > res.jpg`)
+            console.log(`run: curl -X POST --data-binary @sample/prepared.bin http://localhost:3000/api/v1/xxx/yyy/zzzz/t > res.jpg`)
         } else {
             var cmd = await fs.promises.readFile('sample/prepared.bin')
-            console.log(`run: curl "http://localhost:3000/api/v1/xxx/yyy/zzzz/transform/${cmd}" > res.jpg`)
+            console.log(`run: curl "http://localhost:3000/api/v1/xxx/yyy/zzzz/t/${cmd}" > res.jpg`)
         }
 
 

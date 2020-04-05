@@ -15,32 +15,36 @@ class Encryptor {
         this.isPost=isPost
     }
 
-    async encrypt(commands, privKey, dataPath) {
-        if (this.isPost) { //posts are not encrypted
-            //base64 encode assetPaths
-            var att = commands.att;
-            if (att) {
-                await Object.entries(att).forEachAsync( async ([num,path]) => {
+    async encrypt(command, privKey, dataPath) {
+        var encCommand={}
+
+
+        var text = Buffer.from(JSON.stringify(command.blob));
+        var encrypted = crypto.privateEncrypt(privKey, text)
+        encCommand.blob = base64url(Buffer.from(encrypted).toString('binary'))
+
+        if (this.isPost) {
+            if (command.att) {
+                encCommand.att = {};
+                await Object.entries(command.att).forEachAsync( async ([num,path]) => {
                     var content = await fs.promises.readFile(path, {encoding: 'binary'})
                     var base64 = Buffer.from(content,'binary').toString('base64')
-                    commands.att[num] = base64
+                    encCommand.att[num] = base64
                 })
-                var data = JSON.stringify(commands)
             }
+
+            await fs.promises.writeFile(dataPath, JSON.stringify(encCommand))
         } else {
-            delete(commands.att) // just to make sure get have no atts
-            var text = Buffer.from(JSON.stringify(commands));
-            var encrypted = crypto.privateEncrypt(privKey, text)
-            console.log(encrypted)
-            var data = base64url(Buffer.from(encrypted).toString('binary'))
+            await fs.promises.writeFile(dataPath, encCommand.blob)
         }
-        await fs.promises.writeFile(dataPath, data)
-        return true
     }
 
     async decrypt(pubKey, data, dir) {
+        var command = {}
+
+
         if (this.isPost) {
-            var command= JSON.parse(data)
+            command= JSON.parse(data)
             if (command.att) {
                 await Object.entries(command.att).forEachAsync( async ([num, base64]) => {
                     data=Buffer.from(base64,'base64').toString('binary')
@@ -49,15 +53,15 @@ class Encryptor {
                     command.att[num]=fileName
                 });
             }
-            return command
-        } else {
-            var decoded = Buffer.from(base64url.decode(data),'binary')
-            console.log(decoded)
-            var decrypted = crypto.publicDecrypt(pubKey, decoded)
-            var command = JSON.parse(decrypted.toString('utf8'))
-            return command
+        } else { // GET case
+            command.blob = data
         }
 
+        var decoded = Buffer.from(base64url.decode(command.blob),'binary')
+        console.log(decoded)
+        var decrypted = crypto.publicDecrypt(pubKey, decoded)
+        command.blob = JSON.parse(decrypted.toString('utf8'))
+        return command
     }
 
 }
