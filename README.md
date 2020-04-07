@@ -125,10 +125,17 @@ Build image
 $ bin/build
 ```
 
-Run image
+Run in production
 
 ```bash
 $ bin/container_exec bin/run
+```
+
+Run for development
+
+```bash
+$ bin/container_exec
+$ yarn dev
 ```
 
 ### Environment
@@ -138,7 +145,7 @@ $ bin/container_exec bin/run
 
 I'd like to thank :
   * https://github.com/zrrrzzt/tfk-api-unoconv for his/her work to wrap unoconv2 as a service.
-  * Thanks to Experteer GmbH to allow me to design https://github.com/experteer/blobsterix, a ruby implementation of the concept with built in storage.
+  * Thanks to Experteer GmbH to allow me to design https://github.com/experteer/blobsterix, a ruby implementation of the concept with a built in storage.
 
 ## License
 
