@@ -21,8 +21,14 @@ class FileCache {
     async isHit() {
         try {
             await fs.promises.stat(this.cachePath)
-            console.log("cache hit:", this.cachePath, this.cacheKey)
-            return true
+            var cacheInfo= JSON.parse(await fs.promises.readFile(this.cachePath+'.cache'))
+            if (cacheInfo.ca && cacheInfo.ca.utl && cacheInfo.ca.utl > (new Date).getTime()/1000 ) {
+                console.log("cache hit:", this.cachePath, this.cacheKey)
+                return true
+            } else {
+                console.log("cache old:", this.cachePath, this.cacheKey, cacheInfo.ca )
+            }
+
         } catch(e) {
             console.log("cache miss:", this.cachePath, this.cacheKey)
             return false
