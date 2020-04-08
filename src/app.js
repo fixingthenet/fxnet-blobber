@@ -95,36 +95,37 @@ async function start(listen) {
 
         await securityContext.authenticate()
 
-        var cleanup = function() {
-            fs.rmdir(path, {recursive: true}, function(err){
-                if (err) console.err(`cleanup failure for ${path}`)
-            })}
+        if (securityContext.granted('get')) {
+            var cleanup = function() {
+                fs.rmdir(path, {recursive: true}, function(err){
+                    if (err) console.err(`cleanup failure for ${path}`)
+                })}
 
-        res.on('finish', cleanup)
+            res.on('finish', cleanup)
 
-        req.on('error', async () => {
-            cleanup()
-            res.send({ success: false })
-        })
+            req.on('error', async () => {
+                cleanup()
+                res.send({ success: false })
+            })
 
-        var enc=new Encryptor(false)
-        var cmd = await enc.decrypt(
-            securityContext.publicKey(),
-            await fs.promises.readFile(origPostPath),
-            path
-        )
+            var enc=new Encryptor(false)
+            var cmd = await enc.decrypt(
+                securityContext.publicKey(),
+                await fs.promises.readFile(origPostPath),
+                path
+            )
 
-        var cache=new FileCache(config.CACHE, cmd, encrypted_cmd)
+            var cache=new FileCache(config.CACHE, cmd, encrypted_cmd)
 
-        if (await cache.isHit()) {
-            res.sendFile(cache.filePath()) // this is too file specific, a stream is better
-        } else {
-            var trans=new Transformator(cmd, path, true)
-            await trans.execute()
-            await cache.store(path+'/out.bin')
-            res.sendFile(path+'/out.bin')
+            if (await cache.isHit()) {
+                res.sendFile(cache.filePath()) // this is too file specific, a stream is better
+            } else {
+                var trans=new Transformator(cmd, path, true)
+                await trans.execute()
+                await cache.store(path+'/out.bin')
+                res.sendFile(path+'/out.bin')
+            }
         }
-
     }));
 
     app.get('/health', (req,res) => {
