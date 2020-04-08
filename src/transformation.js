@@ -48,7 +48,7 @@ class Transformator {
             try {
                 await step.transform()
             } catch(err) {
-                console.error(`${step.name()} errored`)
+                console.error(`${step.name()} errored: ${err}`)
             }
         });
     }

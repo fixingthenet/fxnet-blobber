@@ -47,7 +47,8 @@ async function start(listen) {
             var cleanup = function() {
                 fs.rmdir(path, {recursive: true}, function(err){
                     if (err) console.err(`cleanup failure for ${path}`)
-                })}
+                })
+            }
 
             res.on('finish', cleanup)
 
@@ -66,7 +67,7 @@ async function start(listen) {
                     path
                 )
                 var trans=new Transformator(com, path, true)
-                //                    trans.explain()
+//                trans.explain()
                 await trans.execute()
                 res.sendFile(path+'/out.bin')
             })

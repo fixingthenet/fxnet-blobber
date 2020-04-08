@@ -1,7 +1,7 @@
  {
    "blob": {
       "tr": [
-        ["in-file", {"att": "0", "m": "image/jpg" }],
+        ["in-file", {"url": "att://0", "m": "image/jpg" }],
         ["rotate", {"degrees": 12}],
         ["grayscale"],
         ["out", { "m": "image/png" }]

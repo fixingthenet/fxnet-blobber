@@ -1,5 +1,5 @@
 const fs = require('fs')
-
+var needle = require('needle')
 const Base = require('./base')
 const NAME='in-file'
 class Trans extends Base {
@@ -7,11 +7,23 @@ class Trans extends Base {
         return NAME
     }
     explain() {
-        return `copy ${this.trans.attPath(this.options.att)} to ${this.outPath}`
+        return `copy ${this.options.url} to ${this.outPath}`
     }
 
     async transform() {
-        await fs.promises.copyFile(this.trans.attPath(this.options.att), this.outPath)
+        var url = new URL(this.options.url)
+
+        switch(url.protocol) {
+        case 'att:':
+            await fs.promises.copyFile(this.trans.attPath(url.hostname), this.outPath)
+            break;
+        case 'http:':
+        case 'https:':
+            await needle('get', this.options.url, { output: this.outPath })
+            break;
+        default:
+            throw("Unknown protocol ", url.protocol)
+        }
         return this.options.m
     }
 }

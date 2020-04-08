@@ -49,9 +49,10 @@ async function run(cmdFile,privateKeyFilename, isPost,transform) {
 }
 
 
-if (process.argv.length <2) {
+if (process.argv.length <3) {
     console.log("usage: command_filename private_key_filename GET|POST? transform?")
     console.log("GET is default, no transformation is default")
+    process.exit(1)
+} else {
+    run(process.argv[2], process.argv[3], process.argv[4] == 'POST') //, process.argv[4] == 'transform')
 }
-
-run(process.argv[2], process.argv[3], process.argv[4] == 'POST') //, process.argv[4] == 'transform')

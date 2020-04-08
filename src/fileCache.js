@@ -31,8 +31,16 @@ class FileCache {
     }
 
     async store(outPath) {
-        await fs.promises.mkdir(this.cacheDir, {recursive: true} )
-        await fs.promises.copyFile(outPath, this.cachePath)
+        if (this.cmd.blob.ca) {
+            if (this.cmd.blob.ca.utl && this.cmd.blob.ca.utl > (new Date).getTime()/1000 ) {
+                console.debug("FileCache: caching, until ",  this.cmd.blob.ca.utl )
+                await fs.promises.mkdir(this.cacheDir, {recursive: true} )
+                await fs.promises.copyFile(outPath, this.cachePath)
+                await fs.promises.writeFile(this.cachePath+'.cache', JSON.stringify({ca: this.cmd.blob.ca}))
+            } else {
+                console.debug("FileCache: not caching, until limit reached or not present")
+            }
+        }
     }
 
     filePath() {

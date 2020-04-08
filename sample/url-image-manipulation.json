@@ -1,0 +1,11 @@
+ {
+   "blob": {
+      "ca": { "utl": 2586373913 },
+      "tr": [
+        ["in-file", {"url": "https://www.budgetstockphoto.com/samples/pics/skyclounds.jpg", "m": "image/jpg" }],
+        ["rotate", {"degrees": 12}],
+        ["grayscale"],
+        ["out", { "m": "image/png" }]
+      ]
+   }
+}
