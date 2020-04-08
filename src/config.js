@@ -1,4 +1,4 @@
-'use strict'
+const simpleAuth = require ('./simpleAuth')
 
 module.exports = {
     //  SERVER_PORT: process.env.SERVER_PORT || 3000,
@@ -12,4 +12,5 @@ module.exports = {
         path: process.cwd() + '/cache/',
         seed: "awioeucnr0a92384cn0q92834pc928u3p490m2q348"
     },
+    AUTH: function(params) { return new simpleAuth(params)},
 }

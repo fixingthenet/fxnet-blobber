@@ -10,18 +10,18 @@ const transformator = require('../src/transformation')
 
 const path='sample/unpack'
 
-async function run(cmdFile,isPost,transform) {
+async function run(cmdFile,privateKeyFilename, isPost,transform) {
     console.log(`preparing for ${ isPost ? 'POST' : 'GET'} ${transform ? 'with' : 'without' } transformation`)
     var enc=new Encryptor(isPost)
 
     var command = JSON.parse(await fs.promises.readFile(cmdFile));
 
     await enc.encrypt(command,
-                      await fs.promises.readFile('sample/priv.key'),
+                      await fs.promises.readFile(privateKeyFilename),
                       'sample/prepared.bin'
                      );
 
-    if (transform) {
+    if (false && transform) { // currently disabled
         var com = await enc.decrypt(
             await fs.promises.readFile('sample/pub.key'),
             await fs.promises.readFile('sample/prepared.bin'),
@@ -32,12 +32,13 @@ async function run(cmdFile,isPost,transform) {
         trans.explain();
         await trans.execute();
     } else {
+        const key='tester'
         console.log("no transformation prepared; cmd in sample/prepared.bin")
         if (isPost) {
-            console.log(`run: curl -X POST --data-binary @sample/prepared.bin http://localhost:3000/api/v1/xxx/yyy/zzzz/t > res.jpg`)
+            console.log(`run: curl -X POST --data-binary @sample/prepared.bin http://localhost:3000/api/v1/x/y/${key}/t > res.jpg`)
         } else {
             var cmd = await fs.promises.readFile('sample/prepared.bin')
-            console.log(`run: curl "http://localhost:3000/api/v1/xxx/yyy/zzzz/t/${cmd}" > res.jpg`)
+            console.log(`run: curl "http://localhost:3000/api/v1/x/y/${key}/t/${cmd}" > res.jpg`)
         }
 
 
@@ -49,8 +50,8 @@ async function run(cmdFile,isPost,transform) {
 
 
 if (process.argv.length <2) {
-    console.log("usage: command_path GET|POST? transform?")
+    console.log("usage: command_filename private_key_filename GET|POST? transform?")
     console.log("GET is default, no transformation is default")
 }
 
-run(process.argv[2], process.argv[3] == 'POST', process.argv[4] == 'transform')
+run(process.argv[2], process.argv[3], process.argv[4] == 'POST') //, process.argv[4] == 'transform')

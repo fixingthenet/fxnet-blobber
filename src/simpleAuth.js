@@ -1,5 +1,7 @@
 const fs = require('fs')
 const exceptions = require('./exceptions')
+
+
 class SimpleAuth {
     constructor(params) {
         this.params=params
@@ -7,7 +9,7 @@ class SimpleAuth {
 
     async authenticate() {
         try {
-            this.pubicKey=  await fs.promises.readFile(this.params.config.ROOT_PATH + `/simpleAuth/${this.params.key}-pub.key`)
+            this.pubKey=  await fs.promises.readFile(this.params.config.ROOT_PATH + `/simpleAuth/${this.params.key}-pub.key`)
         } catch(e) {
             throw new exceptions.AuthException('authentication failed', e)
         }
@@ -20,7 +22,7 @@ class SimpleAuth {
     }
 
     publicKey() {
-
+        return this.pubKey
     }
 }
 

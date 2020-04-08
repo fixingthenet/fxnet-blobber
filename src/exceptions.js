@@ -1,5 +1,6 @@
-class AuthException {
+class AuthException extends Error {
     constructor(msg, exc) {
+        super(msg)
         this.message = msg
         this.name = "AuthException"
         this.exc = exc

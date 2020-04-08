@@ -58,7 +58,7 @@ class Encryptor {
         }
 
         var decoded = Buffer.from(base64url.decode(command.blob),'binary')
-        console.log(decoded)
+//        console.log(decoded)
         var decrypted = crypto.publicDecrypt(pubKey, decoded)
         command.blob = JSON.parse(decrypted.toString('utf8'))
         return command
