@@ -129,7 +129,7 @@ async function start(listen) {
             var cache=new FileCache(config.CACHE, cmd, encrypted_cmd)
 
             res.set("Etag",encrypted_cmd)
-            if ( await cache.isHit()) {
+            if (await cache.isHit()) {
                 if (cache.maxAge) res.set("Cache-Control","public, max-age="+cache.maxAge)
                 res.set("Content-Type", cache.mime)
                 res.sendFile(cache.filePath()) // this is too file specific, a stream is better

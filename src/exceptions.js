@@ -6,13 +6,21 @@ class AuthException extends Error {
         this.exc = exc
     }
 
-//    toString() {
-//        return `${this.name}: ${this.message}; ${this.exc}`
-//    }
+}
+
+class TransformationException extends Error {
+    constructor(step, exc) {
+        super(step)
+        this.message = step
+        this.name = "TransformationException"
+        this.exc = exc
+    }
+
 }
 
 
 module.exports = {
     AuthException: AuthException,
+    TransformationException: TransformationException,
 
 }

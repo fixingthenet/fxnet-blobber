@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-
+const exceptions = require('./exceptions')
 class Transformations {
     constructor() {
         this.registered={}
@@ -51,6 +51,7 @@ class Transformator {
                 console.log(res)
             } catch(err) {
                 console.error(`${step.name()} errored: ${err}`)
+                throw(new exceptions.TransformationException(step.name(), err))
             }
         });
         return res
