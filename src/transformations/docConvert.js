@@ -20,7 +20,7 @@ class Trans extends Base {
                     reject(err)
                 } else {
                     await fs.promises.writeFile(this.outPath,result)
-                    resolve()
+                    resolve( {mime: 'application/octet-stream'})
                 }
             })
         })

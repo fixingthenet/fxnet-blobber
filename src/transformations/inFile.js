@@ -24,7 +24,7 @@ class Trans extends Base {
         default:
             throw("Unknown protocol ", url.protocol)
         }
-        return this.options.m
+        return { mime: this.options.m }
     }
 }
 

@@ -23,6 +23,7 @@ async function start(listen) {
     var options = {
         port: 3000,
     }
+
     app.use(logger('dev'));
 
     app.post('/api/v1/:ns/:bucket/:key/t', wrap(async function (req, res) {
@@ -82,6 +83,15 @@ async function start(listen) {
         // this could be moved into middleware
         //writing before cache check is not good....improvement needed
         var encrypted_cmd = req.params.encrypted_cmd
+
+        if (encrypted_cmd == req.get('If-None-Match') || encrypted_cmd == req.get('Etag')) {
+            console.log("using cached")
+            res.status(304).send('')
+            return
+        }
+
+
+
         var path = config.UPLOAD_PATH + uuid.v4()
         await fs.promises.mkdir(path)
         var origPostPath=path+'/original_post.bin'
@@ -118,12 +128,17 @@ async function start(listen) {
 
             var cache=new FileCache(config.CACHE, cmd, encrypted_cmd)
 
-            if (await cache.isHit()) {
+            res.set("Etag",encrypted_cmd)
+            if ( await cache.isHit()) {
+                if (cache.maxAge) res.set("Cache-Control","public, max-age="+cache.maxAge)
+                res.set("Content-Type", cache.mime)
                 res.sendFile(cache.filePath()) // this is too file specific, a stream is better
             } else {
                 var trans=new Transformator(cmd, path, true)
-                await trans.execute()
-                await cache.store(path+'/out.bin')
+                var transResult=await trans.execute()
+                await cache.store(path+'/out.bin', transResult)
+                if (cache.maxAge) res.set("Cache-Control","public, max-age="+cache.maxAge)
+                res.set("Content-Type", transResult.mime)
                 res.sendFile(path+'/out.bin')
             }
         }

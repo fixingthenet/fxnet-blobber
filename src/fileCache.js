@@ -21,8 +21,10 @@ class FileCache {
     async isHit() {
         try {
             await fs.promises.stat(this.cachePath)
-            var cacheInfo= JSON.parse(await fs.promises.readFile(this.cachePath+'.cache'))
-            if (cacheInfo.ca && cacheInfo.ca.utl && cacheInfo.ca.utl > (new Date).getTime()/1000 ) {
+            var cacheCmd= JSON.parse(await fs.promises.readFile(this.cachePath+'.cache'))
+            if (cacheCmd.blob.ca && cacheCmd.blob.ca.utl && cacheCmd.blob.ca.utl > (new Date).getTime()/1000 ) {
+                this.maxAge= Math.max(Math.floor(cacheCmd.blob.ca.utl - (new Date).getTime()/1000))
+                this.mime=cacheCmd.res.mime
                 console.log("cache hit:", this.cachePath, this.cacheKey)
                 return true
             } else {
@@ -37,13 +39,15 @@ class FileCache {
 
     }
 
-    async store(outPath) {
+    async store(outPath, transResult) {
         if (this.cmd.blob.ca) {
             if (this.cmd.blob.ca.utl && this.cmd.blob.ca.utl > (new Date).getTime()/1000 ) {
+                this.maxAge = Math.max(Math.floor(this.cmd.blob.ca.utl - (new Date).getTime()/1000))
                 console.debug("FileCache: caching, until ",  this.cmd.blob.ca.utl )
                 await fs.promises.mkdir(this.cacheDir, {recursive: true} )
                 await fs.promises.copyFile(outPath, this.cachePath)
-                await fs.promises.writeFile(this.cachePath+'.cache', JSON.stringify({ca: this.cmd.blob.ca}))
+                this.cmd.res=transResult
+                await fs.promises.writeFile(this.cachePath+'.cache', JSON.stringify(this.cmd))
             } else {
                 console.debug("FileCache: not caching, until limit reached or not present")
             }

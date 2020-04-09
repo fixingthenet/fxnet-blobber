@@ -12,7 +12,7 @@ class Trans extends Base {
 
     async transform() {
         await fs.promises.copyFile(this.inPath, this.trans.path+'/out.bin')
-//       return this.options.m
+        return { mime: this.options.m}
     }
 }
 

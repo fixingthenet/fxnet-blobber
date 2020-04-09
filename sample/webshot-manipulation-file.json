@@ -1,10 +1,10 @@
  {
    "blob": {
       "tr": [
-        ["in-browser", {"url":"att://0", "m": "image/jpg" }],
+        ["in-browser", {"url":"att://0", "m": "image/jpeg" }],
         ["rotate", {"degrees": 12}],
         ["grayscale"],
-        ["out", { "m": "image/png" }]
+        ["out", { "m": "image/jpeg" }]
       ]
    },
    "att": { "0": "sample/fixtures/aws.html" }

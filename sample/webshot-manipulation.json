@@ -1,10 +1,10 @@
  {
    "blob": {
       "tr": [
-        ["in-browser", {"url":"https://www.heise.de/", "m": "image/jpg" }],
+        ["in-browser", {"url":"https://www.heise.de/", "m": "image/jpeg" }],
         ["rotate", {"degrees": 12}],
         ["grayscale"],
-        ["out", { "m": "image/png" }]
+        ["out", { "m": "image/jpeg" }]
       ]
    } 
 }

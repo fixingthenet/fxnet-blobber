@@ -21,7 +21,7 @@ class Trans extends Base {
                     if (err) {
                         reject(err)
                     } else {
-                        resolve('image/jpg')
+                        resolve({mime: 'image/jpeg' })
                     }
                 })
         })

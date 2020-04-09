@@ -44,13 +44,16 @@ class Transformator {
     }
 
     async execute() {
+        var res;
         await this.plan().forEachAsync( async (step) => {
             try {
-                await step.transform()
+                res=await step.transform(res)
+                console.log(res)
             } catch(err) {
                 console.error(`${step.name()} errored: ${err}`)
             }
         });
+        return res
     }
 
     // private

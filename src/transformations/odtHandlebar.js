@@ -13,10 +13,11 @@ class Trans extends Base {
         return `replacing handlebar macros in ${this.inPath} with ${this.options.att} to ${this.outPath}`
     }
 
-    async transform() {
+    async transform(pre) {
         const { stdout, stderr } = await exec(`odt_handlebars ${this.inPath} ${this.outPath} ${this.trans.attPath(this.options.att)}`);
-        console.debug(`${NAME} stdout:`, stdout);
-        console.error(`${NAME} stderr: `, stderr);
+//        console.debug(`${NAME} stdout:`, stdout);
+        //        console.error(`${NAME} stderr: `, stderr);
+        return { mime: pre.mime }
     }
 }
 
