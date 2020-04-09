@@ -26,6 +26,7 @@ class FileCache {
                 console.log("cache hit:", this.cachePath, this.cacheKey)
                 return true
             } else {
+                await this.cleanup()
                 console.log("cache old:", this.cachePath, this.cacheKey, cacheInfo.ca )
             }
 
@@ -49,9 +50,19 @@ class FileCache {
         }
     }
 
+    async cleanup() {
+        try {
+            await fs.promises.rmdir(this.cacheDir, {recursive: true})
+        } catch(e) {
+
+        }
+    }
+
+
     filePath() {
         return this.cachePath
     }
+
 
 
 }
