@@ -11,3 +11,4 @@ node_modules
 sample/unpack/*
 cache/*
 uploads/*
+yarn-error.log
