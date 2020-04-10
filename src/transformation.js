@@ -48,7 +48,6 @@ class Transformator {
         await this.plan().forEachAsync( async (step) => {
             try {
                 res=await step.transform(res)
-                console.log(res)
             } catch(err) {
                 console.error(`${step.name()} errored: ${err}`)
                 throw(new exceptions.TransformationException(step.name(), err))
