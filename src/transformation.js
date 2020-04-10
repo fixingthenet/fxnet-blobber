@@ -27,6 +27,7 @@ var transformations = new Transformations();
     require('./transformations/grayscale'),
     require('./transformations/odtHandlebar'),
     require('./transformations/docConvert'),
+    require('./transformations/faceDetection'),
 ].forEach( ([name,klass]) => { transformations.register(name, klass) } )
 
 
