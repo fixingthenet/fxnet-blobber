@@ -6,7 +6,7 @@ File transformations as a service. For e.g.
  * convert a LibreOffice Odt file into a PDF
  * replace handlerbar placeholders in an OpenOffice document and render it to Postscript
  * crop an image, rotate it 10 degrees, reduce colors to grayscale and output as a pdf
- * identify the position of faces in an image
+ * identify the position of faces in an image (face recognition)
 
 ## Concept
 
@@ -59,7 +59,7 @@ Available Sources:
 "in-browser","in-file","in-url"
 
 Available Transformations:
-"grayscale", "rotate", "odt-handlebar", "doc-convert"
+"grayscale", "rotate", "odt-handlebar", "doc-convert","face-detection"
 
 
 ### Caching
