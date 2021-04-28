@@ -110,10 +110,11 @@ returns
 
 ## Usage
 ### Quickstart
+
+Upload and convert
 ```
 bin/generate_key
-bin/encrypt_payload priv.key sample/commands.json sample/vorlage.odt sample/prepared.bin
-curl -X POST --data-binary @sample/prepared.bin localhost:3000/api/v1/key1/333/322322/transform
+bin/encrypt_payload sample/some_commands.json priv.key POST
 ```
 
 

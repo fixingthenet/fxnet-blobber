@@ -1,10 +1,10 @@
  {
    "blob": {
       "tr": [
-        ["in-file", {"att": "0"}],
+        ["in-file", {"url": "att://0", "m": "application/odf" }],
         ["odt-handlebar", {"att": "1" }],
-        ["doc-convert", { "format": "pdf"}],
-        ["out"]
+        ["doc-convert", { "format": "pdf"}], 
+        ["out", {"m": "application/pdf"} ]
       ]
    },
     "att": { 

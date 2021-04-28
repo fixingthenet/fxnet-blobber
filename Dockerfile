@@ -7,6 +7,7 @@ FROM node:12.16.1-buster-slim
 RUN apt -y update && \
     apt -y install \
     git \
+    curl \
     joe \
     build-essential \
     unoconv \
@@ -97,8 +98,6 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 
 
 
-#&& rm -rf /var/lib/apt/lists/*
-        
 #### Begin setup ####
 # Env variables
 ENV SERVER_PORT 3000

@@ -68,7 +68,7 @@ async function start(listen) {
                     path
                 )
                 var trans=new Transformator(com, path, true)
-//                trans.explain()
+                trans.explain()
                 await trans.execute()
                 res.sendFile(path+'/out.bin')
             })
