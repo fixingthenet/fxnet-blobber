@@ -23,6 +23,7 @@ var transformations = new Transformations();
     require('./transformations/inBrowser'),
     require('./transformations/inFile'),
     require('./transformations/rotate'),
+    require('./transformations/resize'),
     require('./transformations/out'),
     require('./transformations/grayscale'),
     require('./transformations/odtHandlebar'),

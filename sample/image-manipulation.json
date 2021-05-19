@@ -3,6 +3,7 @@
       "tr": [
         ["in-file", {"url": "att://0", "m": "image/jpeg" }],
         ["rotate", {"degrees": 12}],
+        ["resize", {"x": 300, "y": 300, "opt": ">" }],
         ["grayscale"],
         ["out", { "m": "image/jpeg" }]
       ]
